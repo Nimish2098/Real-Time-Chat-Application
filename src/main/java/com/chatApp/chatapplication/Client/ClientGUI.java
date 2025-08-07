@@ -23,7 +23,7 @@ public class ClientGUI extends JFrame implements  MessageListener{
     public ClientGUI(String username) throws ExecutionException,InterruptedException {
         super("User: "+username);
         this.username = username;
-        myStompClient = new MyStompClient(this,username);
+        myStompClient = new MyStompClient(this  ,username);
 
         setSize(1218,685);
         setLocationRelativeTo(null);
@@ -90,7 +90,9 @@ public class ClientGUI extends JFrame implements  MessageListener{
                     if(input.isEmpty()) return;
                     inputField.setText("");
 
-
+                    messagePanel.add(createChatMessageComponents(new Message("TapTap",input)));
+                    repaint();
+                    revalidate();
                     myStompClient.sendMessage(new Message(username,input));
 
                 }
@@ -126,11 +128,30 @@ public class ClientGUI extends JFrame implements  MessageListener{
 
     @Override
     public void onMessageReceiev(Message message) {
-        System.out.println("onmessageRecieve");
+        messagePanel.add(createChatMessageComponents(message));
+        revalidate();
+        repaint();
     }
 
     @Override
     public void onActiveUsersUpdated(ArrayList<String> users) {
+        if(connectedUsersPanel.getComponents().length >=2){
+            connectedUsersPanel.remove(1);
+        }
 
+        JPanel userPanelList = new JPanel();
+        userPanelList.setBackground(Utilities.TRANSPARENT_COLOR);
+        userPanelList.setLayout(new BoxLayout(userPanelList,BoxLayout.Y_AXIS));
+
+        for(String user:users){
+            JLabel username = new JLabel();
+            username.setText(user);
+            username.setForeground(Utilities.TEXT_COLOR);
+            username.setFont(new Font("Inter",Font.BOLD,16));
+            userPanelList.add(username);
+        }
+        connectedUsersPanel.add(userPanelList);
+        revalidate();
+        repaint();
     }
 }

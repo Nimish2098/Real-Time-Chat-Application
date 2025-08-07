@@ -34,6 +34,8 @@ public class MyStompClient {
 
         session = stompClient.connectAsync(url,sessionHandler).get();
     }
+
+    //Sending message
     public void sendMessage(Message message){
         try{
             session.send("/app/message",message);
@@ -44,9 +46,9 @@ public class MyStompClient {
         }
     }
 
-
+    //Disconecting user
     public void disconnectUser(String username){
-        session.send("/api/disconnect",username);
+        session.send("/app/disconnect",username);
         System.out.println("Disconnect User"+username);
     }
 }
